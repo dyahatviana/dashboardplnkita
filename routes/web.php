@@ -73,10 +73,22 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Route Khusus Pegawai
-    Route::prefix('pegawai')->name('pegawai.')->group(function () {
-        // Halaman daftar tugas dari CS
-        Route::get('/', [PegawaiController::class, 'index'])->name('index');
-    });
+// Route Khusus Pegawai
+Route::prefix('pegawai')->name('pegawai.')->group(function () {
+
+    // Halaman daftar tugas dari CS
+    Route::get('/', [PegawaiController::class, 'index'])
+        ->name('index');
+
+    // Halaman detail tugas
+    Route::get('/{id}', [PegawaiController::class, 'show'])
+        ->name('show');
+
+    // Proses perubahan status tugas
+    Route::post('/{id}/status', [PegawaiController::class, 'updateStatus'])
+        ->name('updateStatus');
+
+});
 
     // Route Rekapitulasi
     Route::get('/rekapitulasi', function () {
