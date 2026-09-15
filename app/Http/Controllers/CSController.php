@@ -8,11 +8,34 @@ use Illuminate\Support\Str;
 
 class CSController extends Controller
 {
-    // Menampilkan halaman daftar permohonan (tabel & status)
+    // Menampilkan halaman dashboard & daftar permohonan
     public function index()
     {
+        // Mengambil semua data permohonan terbaru
         $permohonans = Permohonan::latest()->get();
-        return view('cs.permohonan.index', compact('permohonans'));
+
+        // Data KPI
+        $total = $permohonans->count();
+
+        $menunggu = $permohonans
+            ->where('status', 'Menunggu')
+            ->count();
+
+        $diproses = $permohonans
+            ->where('status', 'Sedang Diproses')
+            ->count();
+
+        $selesai = $permohonans
+            ->where('status', 'Selesai')
+            ->count();
+
+        return view('cs.permohonan.index', compact(
+            'permohonans',
+            'total',
+            'menunggu',
+            'diproses',
+            'selesai'
+        ));
     }
 
     // Menampilkan form input permohonan baru
@@ -50,6 +73,8 @@ class CSController extends Controller
             'status' => 'Menunggu',
         ]);
 
-        return redirect()->route('cs.permohonan.index')->with('success', 'Permohonan berhasil disimpan!');
+        return redirect()
+            ->route('cs.permohonan.index')
+            ->with('success', 'Permohonan berhasil disimpan!');
     }
 }
