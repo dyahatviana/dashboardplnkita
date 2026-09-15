@@ -3,20 +3,27 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CSController;
+use App\Http\Controllers\PegawaiController;
 
 // Route Halaman Utama (http://127.0.0.1:8000)
 Route::get('/', function () {
+
     // Jika belum login, lempar ke halaman login
     if (!auth()->check()) {
         return redirect()->route('login');
     }
 
+    // Jika login sebagai CS
     if (auth()->user()->role === 'cs') {
-        return redirect()->route('cs.permohonan.index'); // Menuju ke halaman tabel permohonan CS
+        return redirect()->route('cs.permohonan.index');
     }
 
-    // Jika role-nya backoffice / admin, buka dashboard
-    return redirect()->route('dashboard');
+    // Jika login sebagai Pegawai
+    if (auth()->user()->role === 'backoffice') {
+        return redirect()->route('pegawai.index');
+    }
+
+    return redirect()->route('login');
 });
 
 // Guest Routes (Hanya bisa diakses jika belum login)
@@ -59,10 +66,16 @@ Route::middleware(['auth'])->group(function () {
 
         // Halaman Form Input Permohonan Baru
         Route::get('/permohonan/create', [CSController::class, 'create'])->name('permohonan.create');
-        Route::get('/permohonan/baru', [CSController::class, 'create'])->name('permohonan.baru'); // Cadangan
+        Route::get('/permohonan/baru', [CSController::class, 'create'])->name('permohonan.baru');
 
         // Proses Simpan Data Form
         Route::post('/permohonan', [CSController::class, 'store'])->name('permohonan.store');
+    });
+
+    // Route Khusus Pegawai
+    Route::prefix('pegawai')->name('pegawai.')->group(function () {
+        // Halaman daftar tugas dari CS
+        Route::get('/', [PegawaiController::class, 'index'])->name('index');
     });
 
     // Route Rekapitulasi

@@ -165,16 +165,47 @@
         </div>
 
         <ul class="nav flex-column mb-auto w-100">
-            <li class="nav-item">
-                <a href="{{ route('dashboard') }}" class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
-                    <i class="bi bi-grid-1x2-fill me-3"></i> Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('cs.permohonan.baru') }}" class="nav-link {{ request()->is('cs/permohonan*') ? 'active' : '' }}">
-                    <i class="bi bi-pencil-square me-3"></i> Input Permohonan
-                </a>
-            </li>
+
+            @if(auth()->user()->role === 'cs')
+
+                {{-- MENU CS --}}
+                <li class="nav-item">
+                    <a href="{{ route('cs.permohonan.index') }}"
+                    class="nav-link {{ request()->is('cs/permohonan*') ? 'active' : '' }}">
+                        <i class="bi bi-inbox-fill me-3"></i>
+                        Permohonan
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('cs.permohonan.baru') }}"
+                    class="nav-link {{ request()->is('cs/permohonan/create') ? 'active' : '' }}">
+                        <i class="bi bi-pencil-square me-3"></i>
+                        Input Permohonan
+                    </a>
+                </li>
+
+            @elseif(auth()->user()->role === 'backoffice')
+
+                {{-- MENU PEGAWAI --}}
+                <li class="nav-item">
+                    <a href="{{ route('pegawai.index') }}"
+                    class="nav-link {{ request()->is('pegawai') ? 'active' : '' }}">
+                        <i class="bi bi-grid-1x2-fill me-3"></i>
+                        Dashboard Pegawai
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('pegawai.index') }}"
+                    class="nav-link {{ request()->is('pegawai*') ? 'active' : '' }}">
+                        <i class="bi bi-list-task me-3"></i>
+                        Tugas Masuk
+                    </a>
+                </li>
+
+            @endif
+
         </ul>
 
         <!-- Tombol Logout yang memicu Modal -->

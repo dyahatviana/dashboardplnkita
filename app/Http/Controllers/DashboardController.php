@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengaduan; // Pastikan Model ini di-import!
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+
 
 class DashboardController extends Controller
 {

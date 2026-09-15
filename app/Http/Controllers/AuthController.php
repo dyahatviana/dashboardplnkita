@@ -37,7 +37,15 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
 
-            return redirect()->intended(route('dashboard'));
+            if (Auth::user()->role === 'cs') {
+                return redirect()->route('cs.permohonan.index');
+            }
+
+            if (Auth::user()->role === 'backoffice') {
+                return redirect()->route('pegawai.index');
+            }
+
+            return redirect()->route('dashboard');
         }
 
         return back()->withErrors([
