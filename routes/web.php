@@ -7,7 +7,6 @@ use App\Http\Controllers\PegawaiController;
 
 // Route Halaman Utama (http://127.0.0.1:8000)
 Route::get('/', function () {
-
     // Jika belum login, lempar ke halaman login
     if (!auth()->check()) {
         return redirect()->route('login');
@@ -18,7 +17,7 @@ Route::get('/', function () {
         return redirect()->route('cs.permohonan.index');
     }
 
-    // Jika login sebagai Pegawai
+    // Jika login sebagai Pegawai / Backoffice
     if (auth()->user()->role === 'backoffice') {
         return redirect()->route('pegawai.index');
     }
@@ -36,7 +35,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Dashboard Route
+    // Dashboard Route (Mock Data)
     Route::get('/dashboard', function () {
         return view('dashboard', [
             'total' => 120,
@@ -70,25 +69,22 @@ Route::middleware(['auth'])->group(function () {
 
         // Proses Simpan Data Form
         Route::post('/permohonan', [CSController::class, 'store'])->name('permohonan.store');
+
+        // Endpoint AJAX untuk mengambil data pelanggan berdasarkan ID (Sinkron dengan fetch di form)
+        Route::get('/get-pelanggan/{id}', [CSController::class, 'getPelanggan'])->name('get-pelanggan');
     });
 
-    // Route Khusus Pegawai
-// Route Khusus Pegawai
-Route::prefix('pegawai')->name('pegawai.')->group(function () {
+    // Route Khusus Pegawai / Backoffice
+    Route::prefix('pegawai')->name('pegawai.')->group(function () {
+        // Halaman daftar tugas dari CS
+        Route::get('/', [PegawaiController::class, 'index'])->name('index');
 
-    // Halaman daftar tugas dari CS
-    Route::get('/', [PegawaiController::class, 'index'])
-        ->name('index');
+        // Halaman detail tugas
+        Route::get('/{id}', [PegawaiController::class, 'show'])->name('show');
 
-    // Halaman detail tugas
-    Route::get('/{id}', [PegawaiController::class, 'show'])
-        ->name('show');
-
-    // Proses perubahan status tugas
-    Route::post('/{id}/status', [PegawaiController::class, 'updateStatus'])
-        ->name('updateStatus');
-
-});
+        // Proses perubahan status tugas
+        Route::post('/{id}/status', [PegawaiController::class, 'updateStatus'])->name('updateStatus');
+    });
 
     // Route Rekapitulasi
     Route::get('/rekapitulasi', function () {

@@ -35,7 +35,7 @@
             </div>
         @endif
 
-        <form action="{{ route('cs.permohonan.store') }}" method="POST">
+        <form action="{{ route('cs.permohonan.store') }}" method="POST" id="formPermohonan">
             @csrf
 
             <div class="row g-4">
@@ -55,20 +55,39 @@
                 <!-- ID Pelanggan -->
                 <div class="col-md-6">
                     <label for="id_pelanggan" class="form-label fw-bold text-dark text-uppercase tracking-wider mb-2" style="font-size: 0.9rem;">
-                        <i class="bi bi-person-badge text-primary me-1"></i> ID Pelanggan
+                        <i class="bi bi-upc-scan text-primary me-1"></i> ID Pelanggan
                     </label>
-                    <input type="text" class="form-control form-control-lg bg-light border-0 py-3 fs-5 @error('id_pelanggan') is-invalid @enderror" id="id_pelanggan" name="id_pelanggan" value="{{ old('id_pelanggan') }}" required placeholder="Contoh: 541012345678" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 12)">
+                    <div class="input-group input-group-lg">
+                        <input type="text" id="id_pelanggan" name="id_pelanggan" class="form-control bg-light border-0 py-3 fs-5 @error('id_pelanggan') is-invalid @enderror" placeholder="Masukkan 12 digit ID Pelanggan" value="{{ old('id_pelanggan') }}" maxlength="12" required>
+                        <button type="button" id="btn-cek-pelanggan" class="btn btn-primary px-4 fw-semibold" style="background-color: #0066cc; border: none;">
+                            <i class="bi bi-search me-1"></i> Cek ID
+                        </button>
+                    </div>
                     @error('id_pelanggan')
-                        <div class="invalid-feedback fs-6">{{ $message }}</div>
+                        <div class="invalid-feedback d-block fs-6">{{ $message }}</div>
                     @enderror
+
+                    <!-- Box Preview Data Pemilik Asli dengan Tombol Salin Cepat -->
+                    <div id="info-pelanggan" class="mt-3 p-3 rounded-3 bg-light border border-success-subtle shadow-sm" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="text-success fw-bold d-flex align-items-center gap-1">
+                                <i class="bi bi-check-circle-fill"></i> Data Pemilik dari Database PLN:
+                            </div>
+                            <button type="button" id="btn-gunakan-data" class="btn btn-sm btn-success py-1 px-2 fw-semibold" style="font-size: 0.8rem;">
+                                <i class="bi bi-arrow-down-circle me-1"></i> Gunakan Data Ini
+                            </button>
+                        </div>
+                        <p class="mb-1 text-secondary"><strong>Nama Pemilik Meter:</strong> <span id="text-nama-db" class="text-dark fw-semibold"></span></p>
+                        <p class="mb-0 text-secondary"><strong>Alamat Meter:</strong> <span id="text-alamat-db" class="text-dark fw-semibold"></span></p>
+                    </div>
                 </div>
 
-                <!-- Nama Pelanggan -->
+                <!-- Nama Pemohon -->
                 <div class="col-md-6">
                     <label for="nama_pelanggan" class="form-label fw-bold text-dark text-uppercase tracking-wider mb-2" style="font-size: 0.9rem;">
-                        <i class="bi bi-person text-primary me-1"></i> Nama Pelanggan
+                        <i class="bi bi-person text-primary me-1"></i> Nama Pemohon
                     </label>
-                    <input type="text" class="form-control form-control-lg bg-light border-0 py-3 fs-5 @error('nama_pelanggan') is-invalid @enderror" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" required placeholder="Masukkan nama lengkap pelanggan">
+                    <input type="text" class="form-control form-control-lg bg-light border-0 py-3 fs-5 @error('nama_pelanggan') is-invalid @enderror" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" required placeholder="Ketik nama pemohon (bisa berbeda dengan pemilik meter)">
                     @error('nama_pelanggan')
                         <div class="invalid-feedback fs-6">{{ $message }}</div>
                     @enderror
@@ -79,19 +98,19 @@
                     <label for="no_telepon" class="form-label fw-bold text-dark text-uppercase tracking-wider mb-2" style="font-size: 0.9rem;">
                         <i class="bi bi-telephone text-primary me-1"></i> No. Telepon / HP
                     </label>
-                    <input type="text" class="form-control form-control-lg bg-light border-0 py-3 fs-5 @error('no_telepon') is-invalid @enderror" id="no_telepon" name="no_telepon" value="{{ old('no_telepon') }}" required placeholder="Contoh: 08123456789">
+                    <input type="text" class="form-control form-control-lg bg-light border-0 py-3 fs-5 @error('no_telepon') is-invalid @enderror" id="no_telepon" name="no_telepon" value="{{ old('no_telepon') }}" required placeholder="Contoh: 08123456789" oninput="this.value = this.value.replace(/[^0-9+\-\s]/g, '')">
                     @error('no_telepon')
                         <div class="invalid-feedback fs-6">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <!-- Alamat Pelanggan -->
+                <!-- Alamat Pemohon -->
                 <div class="col-md-12">
-                    <label for="alamat" class="form-label fw-bold text-dark text-uppercase tracking-wider mb-2" style="font-size: 0.9rem;">
-                        <i class="bi bi-geo-alt text-primary me-1"></i> Alamat Pelanggan
+                    <label for="alamat_pemohon" class="form-label fw-bold text-dark text-uppercase tracking-wider mb-2" style="font-size: 0.9rem;">
+                        <i class="bi bi-geo-alt text-primary me-1"></i> Alamat Lokasi / Pemohon
                     </label>
-                    <textarea class="form-control bg-light border-0 p-3 fs-5 @error('alamat') is-invalid @enderror" id="alamat" name="alamat" rows="3" required placeholder="Tuliskan alamat lengkap lokasi pelanggan...">{{ old('alamat') }}</textarea>
-                    @error('alamat')
+                    <textarea class="form-control bg-light border-0 p-3 fs-5 @error('alamat_pemohon') is-invalid @enderror" id="alamat_pemohon" name="alamat_pemohon" rows="3" required placeholder="Ketik alamat lengkap lokasi/pemohon...">{{ old('alamat_pemohon') }}</textarea>
+                    @error('alamat_pemohon')
                         <div class="invalid-feedback fs-6">{{ $message }}</div>
                     @enderror
                 </div>
@@ -106,27 +125,26 @@
                     $isDivisiLainnya = $oldDivisi && !in_array($oldDivisi, $listDivisi);
                 @endphp
 
-                <!-- Jenis Permohonan + Input Lainnya -->
+                <!-- Jenis Permohonan -->
                 <div class="col-md-4">
                     <label for="jenis_permohonan" class="form-label fw-bold text-dark text-uppercase tracking-wider mb-2" style="font-size: 0.9rem;">
                         <i class="bi bi-file-earmark-text text-primary me-1"></i> Jenis Permohonan
                     </label>
                     <select class="form-select form-select-lg bg-light border-0 py-3 fs-5 @error('jenis_permohonan') is-invalid @enderror" id="jenis_permohonan" name="jenis_permohonan" required onchange="cekDropdown('jenis_permohonan', 'wrapper_lainnya_jenis', 'jenis_permohonan_lainnya')">
                         <option value="" selected disabled>Pilih Jenis Permohonan...</option>
-                        <option value="Pasang Baru" {{ $oldJenis == 'Pasang Baru' ? 'selected' : '' }}>Pasang Baru</option>
-                        <option value="Perubahan Daya" {{ $oldJenis == 'Perubahan Daya' ? 'selected' : '' }}>Perubahan Daya</option>
-                        <option value="Penyambungan Sementara" {{ $oldJenis == 'Penyambungan Sementara' ? 'selected' : '' }}>Penyambungan Sementara</option>
-                        <option value="Pengaduan/Keluhan" {{ $oldJenis == 'Pengaduan/Keluhan' ? 'selected' : '' }}>Pengaduan/Keluhan</option>
+                        <option value="Pasang Baru" {{ ($oldJenis == 'Pasang Baru') ? 'selected' : '' }}>Pasang Baru</option>
+                        <option value="Perubahan Daya" {{ ($oldJenis == 'Perubahan Daya') ? 'selected' : '' }}>Perubahan Daya</option>
+                        <option value="Penyambungan Sementara" {{ ($oldJenis == 'Penyambungan Sementara') ? 'selected' : '' }}>Penyambungan Sementara</option>
+                        <option value="Pengaduan/Keluhan" {{ ($oldJenis == 'Pengaduan/Keluhan') ? 'selected' : '' }}>Pengaduan/Keluhan</option>
                         <option value="Lainnya" {{ $isJenisLainnya ? 'selected' : '' }}>Lainnya...</option>
                     </select>
 
-                    <!-- Input teks tambahan Jenis Permohonan -->
                     <div id="wrapper_lainnya_jenis" class="mt-2 {{ $isJenisLainnya ? '' : 'd-none' }}">
-                        <input type="text" class="form-control bg-light border-0 py-2.5 fs-6" id="jenis_permohonan_lainnya" name="jenis_permohonan_lainnya" value="{{ $isJenisLainnya ? $oldJenis : '' }}" placeholder="Ketik jenis permohonan...">
+                        <input type="text" class="form-control bg-light border-0 py-2.5 fs-6" id="jenis_permohonan_lainnya" name="jenis_permohonan_lainnya" value="{{ $isJenisLainnya ? $oldJenis : old('jenis_permohonan_lainnya') }}" placeholder="Ketik jenis permohonan...">
                     </div>
 
                     @error('jenis_permohonan')
-                        <div class="invalid-feedback fs-6">{{ $message }}</div>
+                        <div class="invalid-feedback fs-6 d-block">{{ $message }}</div>
                     @enderror
                 </div>
 
@@ -145,27 +163,26 @@
                     @enderror
                 </div>
 
-                <!-- Divisi Tujuan + Input Lainnya -->
+                <!-- Divisi Tujuan -->
                 <div class="col-md-4">
                     <label for="divisi_tujuan" class="form-label fw-bold text-dark text-uppercase tracking-wider mb-2" style="font-size: 0.9rem;">
                         <i class="bi bi-diagram-3 text-primary me-1"></i> Divisi Tujuan
                     </label>
                     <select class="form-select form-select-lg bg-light border-0 py-3 fs-5 @error('divisi_tujuan') is-invalid @enderror" id="divisi_tujuan" name="divisi_tujuan" required onchange="cekDropdown('divisi_tujuan', 'wrapper_lainnya_divisi', 'divisi_tujuan_lainnya')">
                         <option value="" selected disabled>Pilih Divisi Tujuan...</option>
-                        <option value="Teknik" {{ $oldDivisi == 'Teknik' ? 'selected' : '' }}>Teknik</option>
-                        <option value="Transaksi Energi" {{ $oldDivisi == 'Transaksi Energi' ? 'selected' : '' }}>Transaksi Energi</option>
-                        <option value="Pemasaran & Pelayanan Pelanggan" {{ $oldDivisi == 'Pemasaran & Pelayanan Pelanggan' ? 'selected' : '' }}>Pemasaran & Pelayanan Pelanggan</option>
-                        <option value="Keuangan & Umum" {{ $oldDivisi == 'Keuangan & Umum' ? 'selected' : '' }}>Keuangan & Umum</option>
+                        <option value="Teknik" {{ ($oldDivisi == 'Teknik') ? 'selected' : '' }}>Teknik</option>
+                        <option value="Transaksi Energi" {{ ($oldDivisi == 'Transaksi Energi') ? 'selected' : '' }}>Transaksi Energi</option>
+                        <option value="Pemasaran & Pelayanan Pelanggan" {{ ($oldDivisi == 'Pemasaran & Pelayanan Pelanggan') ? 'selected' : '' }}>Pemasaran & Pelayanan Pelanggan</option>
+                        <option value="Keuangan & Umum" {{ ($oldDivisi == 'Keuangan & Umum') ? 'selected' : '' }}>Keuangan & Umum</option>
                         <option value="Lainnya" {{ $isDivisiLainnya ? 'selected' : '' }}>Lainnya...</option>
                     </select>
 
-                    <!-- Input teks tambahan Divisi Tujuan -->
                     <div id="wrapper_lainnya_divisi" class="mt-2 {{ $isDivisiLainnya ? '' : 'd-none' }}">
-                        <input type="text" class="form-control bg-light border-0 py-2.5 fs-6" id="divisi_tujuan_lainnya" name="divisi_tujuan_lainnya" value="{{ $isDivisiLainnya ? $oldDivisi : '' }}" placeholder="Ketik nama divisi...">
+                        <input type="text" class="form-control bg-light border-0 py-2.5 fs-6" id="divisi_tujuan_lainnya" name="divisi_tujuan_lainnya" value="{{ $isDivisiLainnya ? $oldDivisi : old('divisi_tujuan_lainnya') }}" placeholder="Ketik nama divisi...">
                     </div>
 
                     @error('divisi_tujuan')
-                        <div class="invalid-feedback fs-6">{{ $message }}</div>
+                        <div class="invalid-feedback fs-6 d-block">{{ $message }}</div>
                     @enderror
                 </div>
 
@@ -181,7 +198,7 @@
                 </div>
             </div>
 
-            <!-- Tombol Aksi Modern & Clean -->
+            <!-- Tombol Aksi -->
             <div class="d-flex align-items-center justify-content-end gap-3 mt-5 pt-4 border-top border-light">
                 <button type="reset" class="btn btn-light text-secondary border px-4 py-3 rounded-3 fw-semibold shadow-sm transition-all fs-6" style="background-color: #f8fafc;" onclick="resetSemuaLainnya()">
                     <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Form
@@ -220,37 +237,117 @@
         document.getElementById('wrapper_lainnya_divisi').classList.add('d-none');
         document.getElementById('divisi_tujuan_lainnya').removeAttribute('required');
         document.getElementById('divisi_tujuan_lainnya').value = '';
+
+        document.getElementById('info-pelanggan').style.display = 'none';
+
+        // Reset variabel global fetched data
+        window.fetchedNamaPelanggan = null;
+        window.fetchedAlamatPelanggan = null;
+
+        // Hapus styling auto-fill saat reset
+        document.getElementById('nama_pelanggan').classList.remove('auto-filled');
+        document.getElementById('alamat_pemohon').classList.remove('auto-filled');
     }
 
-    // Tangani pengiriman form agar nilai custom "Lainnya" otomatis dikirim ke controller
-    document.querySelector('form').addEventListener('submit', function(e) {
-        // Cek Jenis Permohonan Lainnya
+    // Fungsi fetch data pelanggan dari database
+    function fetchPelanggan(idPel) {
+        if (idPel !== '') {
+            fetch(`/cs/get-pelanggan/${idPel}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        // Simpan data ke variabel global sementara untuk tombol "Gunakan Data Ini"
+                        window.fetchedNamaPelanggan = result.data.nama;
+                        window.fetchedAlamatPelanggan = result.data.alamat;
+
+                        // Tampilkan box preview informasi database saja
+                        document.getElementById('text-nama-db').textContent = result.data.nama;
+                        document.getElementById('text-alamat-db').textContent = result.data.alamat;
+                        document.getElementById('info-pelanggan').style.display = 'block';
+                    } else {
+                        alert('ID Pelanggan tidak terdaftar di database!');
+                        document.getElementById('info-pelanggan').style.display = 'none';
+                        window.fetchedNamaPelanggan = null;
+                        window.fetchedAlamatPelanggan = null;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+
+    // Event Listener Tombol "Gunakan Data Ini"
+    document.getElementById('btn-gunakan-data').addEventListener('click', function() {
+        if (window.fetchedNamaPelanggan && window.fetchedAlamatPelanggan) {
+            const inputNama = document.getElementById('nama_pelanggan');
+            const inputAlamat = document.getElementById('alamat_pemohon');
+
+            inputNama.value = window.fetchedNamaPelanggan;
+            inputNama.classList.add('auto-filled');
+
+            inputAlamat.value = window.fetchedAlamatPelanggan;
+            inputAlamat.classList.add('auto-filled');
+        }
+    });
+
+    // Hapus warna auto-filled jika CS mengetik manual ulang
+    document.getElementById('nama_pelanggan').addEventListener('input', function() {
+        if(this.value.trim() === '') {
+            this.classList.remove('auto-filled');
+        }
+    });
+    document.getElementById('alamat_pemohon').addEventListener('input', function() {
+        if(this.value.trim() === '') {
+            this.classList.remove('auto-filled');
+        }
+    });
+
+    // Event Listener Tombol Cek ID Pelanggan
+    document.getElementById('btn-cek-pelanggan').addEventListener('click', function() {
+        let idPel = document.getElementById('id_pelanggan').value.trim();
+        fetchPelanggan(idPel);
+    });
+
+    // Event Listener Blur Input ID Pelanggan
+    document.getElementById('id_pelanggan').addEventListener('blur', function() {
+        let idPel = this.value.trim();
+        if(idPel !== '') {
+            fetchPelanggan(idPel);
+        }
+    });
+
+    // Tangani pengiriman form custom "Lainnya" (Diperbaiki agar tidak disable elemen agar nilai aman terkirim)
+    document.getElementById('formPermohonan').addEventListener('submit', function(e) {
         const selectJenis = document.getElementById('jenis_permohonan');
         const inputJenisLainnya = document.getElementById('jenis_permohonan_lainnya');
         if (selectJenis.value === 'Lainnya' && inputJenisLainnya.value.trim() !== '') {
-            let hiddenJenis = document.createElement('input');
-            hiddenJenis.type = 'hidden';
-            hiddenJenis.name = 'jenis_permohonan';
-            hiddenJenis.value = inputJenisLainnya.value.trim();
-            selectJenis.name = 'jenis_permohonan_select';
-            this.appendChild(hiddenJenis);
+            // Ubah langsung option value atau buat option baru dinamis agar terkirim ke Laravel
+            let customOption = document.createElement('option');
+            customOption.value = inputJenisLainnya.value.trim();
+            customOption.text = inputJenisLainnya.value.trim();
+            customOption.selected = true;
+            selectJenis.appendChild(customOption);
         }
 
-        // Cek Divisi Tujuan Lainnya
         const selectDivisi = document.getElementById('divisi_tujuan');
         const inputDivisiLainnya = document.getElementById('divisi_tujuan_lainnya');
         if (selectDivisi.value === 'Lainnya' && inputDivisiLainnya.value.trim() !== '') {
-            let hiddenDivisi = document.createElement('input');
-            hiddenDivisi.type = 'hidden';
-            hiddenDivisi.name = 'divisi_tujuan';
-            hiddenDivisi.value = inputDivisiLainnya.value.trim();
-            selectDivisi.name = 'divisi_tujuan_select';
-            this.appendChild(hiddenDivisi);
+            let customOptionDivisi = document.createElement('option');
+            customOptionDivisi.value = inputDivisiLainnya.value.trim();
+            customOptionDivisi.text = inputDivisiLainnya.value.trim();
+            customOptionDivisi.selected = true;
+            selectDivisi.appendChild(customOptionDivisi);
         }
     });
 </script>
 
 <style>
+    /* Styling modern emerald untuk input form yang terisi otomatis dari database PLN */
+    .auto-filled {
+        background-color: #ecfdf5 !important; /* Emerald 50: Mint clean yang sangat soft & elegan */
+        border: 1px solid #34d399 !important;    /* Emerald 400: Border hijau modern */
+        color: #065f46 !important;            /* Emerald 800: Teks hijau tua yang tajam & kontras */
+    }
+
     .form-control, .form-select {
         color: #0f172a;
         transition: all 0.2s ease-in-out;
