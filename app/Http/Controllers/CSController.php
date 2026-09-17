@@ -49,10 +49,10 @@ class CSController extends Controller
     {
         $request->validate([
             'tanggal_permohonan' => 'required|date',
-            'id_pelanggan' => 'required|string|max:12',
+            'id_pelanggan' => 'required|string|digits:12',
             'nama_pelanggan' => 'required|string|max:255',
             'alamat' => 'required|string',
-            'no_telepon' => 'required|string|max:20',
+            'no_telepon' => 'required|string|min:11|max:13',
             'jenis_permohonan' => 'required|string|max:100',
             'jenis_tarif' => 'required|string|in:Prabayar,Pascabayar',
             'divisi_tujuan' => 'required|string|max:100',

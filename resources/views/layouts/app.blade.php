@@ -169,20 +169,19 @@
             @if(auth()->user()->role === 'cs')
 
                 {{-- MENU CS --}}
-                <li class="nav-item">
-                    <a href="{{ route('cs.permohonan.index') }}"
-                    class="nav-link {{ request()->is('cs/permohonan*') ? 'active' : '' }}">
-                        <i class="bi bi-inbox-fill me-3"></i>
-                        Permohonan
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('cs.permohonan.baru') }}"
-                    class="nav-link {{ request()->is('cs/permohonan/create') ? 'active' : '' }}">
-                        <i class="bi bi-pencil-square me-3"></i>
-                        Input Permohonan
-                    </a>
+                                <li class="nav-item">
+                        <a href="{{ route('cs.permohonan.index') }}"
+                        class="nav-link {{ request()->is('cs/permohonan') ? 'active' : '' }}">
+                            <i class="bi bi-archive me-3"></i>
+                            Permohonan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('cs.permohonan.baru') }}"
+                        class="nav-link {{ request()->is('cs/permohonan/baru') ? 'active' : '' }}">
+                            <i class="bi bi-pencil-square me-3"></i>
+                            Input Permohonan
+                        </a>
                 </li>
 
             @elseif(auth()->user()->role === 'backoffice')
