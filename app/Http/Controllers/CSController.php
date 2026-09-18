@@ -9,24 +9,39 @@ use Illuminate\Support\Str;
 
 class CSController extends Controller
 {
-    // Menampilkan halaman dashboard & daftar permohonan
-    public function index()
-    {
-        $permohonans = Permohonan::latest()->get();
+    // Menampilkan halaman dashboard & daftar permohonan (Dilengkapi Fitur Pencarian)
+   public function index(Request $request)
+{
+    // Ambil nilai search, gunakan trim untuk membersihkan spasi kosong
+    $search = trim($request->input('search'));
 
-        $total = Permohonan::count();
-        $menunggu = Permohonan::where('status', 'Menunggu')->count();
-        $diproses = Permohonan::where('status', 'Sedang Diproses')->count();
-        $selesai = Permohonan::where('status', 'Selesai')->count();
+    $query = Permohonan::latest();
 
-        return view('cs.permohonan.index', compact(
-            'permohonans',
-            'total',
-            'menunggu',
-            'diproses',
-            'selesai'
-        ));
+    // Hanya filter jika $search benar-benar ada isinya
+    if (!empty($search)) {
+        $query->where(function($q) use ($search) {
+            $q->where('no_agenda', 'like', "%{$search}%")
+              ->orWhere('id_pelanggan', 'like', "%{$search}%")
+              ->orWhere('nama_pelanggan', 'like', "%{$search}%")
+              ->orWhere('alamat', 'like', "%{$search}%");
+        });
     }
+
+    $permohonans = $query->paginate(10)->withQueryString();
+
+    $total = Permohonan::count();
+    $menunggu = Permohonan::where('status', 'Menunggu')->count();
+    $diproses = Permohonan::where('status', 'Sedang Diproses')->count();
+    $selesai = Permohonan::where('status', 'Selesai')->count();
+
+    return view('cs.permohonan.index', compact(
+        'permohonans',
+        'total',
+        'menunggu',
+        'diproses',
+        'selesai'
+    ));
+}
 
     // Menampilkan form input permohonan baru
     public function create()
@@ -61,8 +76,8 @@ class CSController extends Controller
         $request->validate([
             'tanggal_permohonan'  => 'required|date',
             'id_pelanggan'        => 'required|string|digits:12',
-            'nama_pemohon'        => 'required|string|max:255', // <--- Validasi untuk Nama Pemohon
-            'nama_pelanggan'      => 'required|string|max:255', // Nama Pemilik dari DB PLN
+            'nama_pemohon'        => 'required|string|max:255',
+            'nama_pelanggan'      => 'required|string|max:255',
             'alamat_pemohon'      => 'required|string',
             'no_telepon'          => ['required', 'string', 'regex:/^[0-9\+\-\s]+$/', 'min:10', 'max:15'],
             'jenis_permohonan'    => 'required|string|max:100',
@@ -80,9 +95,9 @@ class CSController extends Controller
             'no_agenda'           => 'PRM-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
             'tanggal_permohonan'  => $request->tanggal_permohonan,
             'id_pelanggan'        => $request->id_pelanggan,
-            'nama_pemohon'        => $request->nama_pemohon,     // <--- Disimpan ke kolom nama_pemohon
-            'nama_pelanggan'      => $request->nama_pelanggan,   // Nama Pemilik dari DB PLN
-            'alamat'              => $request->alamat_pemohon,   
+            'nama_pemohon'        => $request->nama_pemohon,
+            'nama_pelanggan'      => $request->nama_pelanggan,
+            'alamat'              => $request->alamat_pemohon,
             'no_telepon'          => $request->no_telepon,
             'jenis_permohonan'    => $request->jenis_permohonan,
             'jenis_tarif'         => $request->jenis_tarif,
@@ -95,4 +110,10 @@ class CSController extends Controller
             ->route('cs.permohonan.index')
             ->with('success', 'Permohonan berhasil disimpan!');
     }
+
+    public function show($id)
+{
+    $permohonan = \App\Models\Permohonan::findOrFail($id);
+    return view('cs.permohonan.show', compact('permohonan'));
+}
 }

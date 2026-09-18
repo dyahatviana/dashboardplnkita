@@ -74,6 +74,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/get-pelanggan/{id}', [CSController::class, 'getPelanggan'])->name('get-pelanggan');
     });
 
+
+
+
+// Pastikan rute show ini ada
+Route::get('/cs/permohonan/{id}', [CSController::class, 'show'])->name('cs.permohonan.show');
+
     // Route Khusus Pegawai / Backoffice
     Route::prefix('pegawai')->name('pegawai.')->group(function () {
         // Halaman daftar tugas dari CS
@@ -91,3 +97,4 @@ Route::middleware(['auth'])->group(function () {
         return view('rekapitulasi');
     })->name('rekapitulasi');
 });
+
