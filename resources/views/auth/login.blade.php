@@ -164,7 +164,7 @@
                     </div>
 
 
-                    <!-- Pesan error -->
+                    <!-- Pesan error validasi -->
                     @if ($errors->any())
 
                         <div
@@ -180,6 +180,30 @@
 
                                 <p class="text-xs text-red-100 mt-0.5">
                                     {{ $errors->first() }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    @endif
+
+                    <!-- Pesan Sesi Kedaluwarsa (419 Prevention) -->
+                    @if (session('session_expired'))
+
+                        <div
+                            class="mb-5 p-3.5 bg-amber-500/15 border-l-4 border-amber-400 text-white rounded-xl flex items-start space-x-3 backdrop-blur-md">
+
+                            <i class="fa-solid fa-clock-rotate-left text-amber-400 mt-0.5"></i>
+
+                            <div>
+
+                                <p class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">
+                                    Sesi Diperbarui
+                                </p>
+
+                                <p class="text-xs text-amber-100 mt-0.5 leading-relaxed">
+                                    {{ session('session_expired') }}
                                 </p>
 
                             </div>

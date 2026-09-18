@@ -12,36 +12,42 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-                    /* Styling tombol merah modern dengan efek transisi interaktif */
-            .btn-modern-danger {
-                background-color: #e11d48 !important; /* Warna dasar: Merah Rose Modern (Tailwind rose-600) */
-                border: none !important;
-                transition: all 0.2s ease-in-out !important;
-            }
-
-            /* Saat kursor diarahkan (Hover) */
-            .btn-modern-danger:hover {
-                background-color: #be123c !important; /* Menjadi sedikit lebih gelap & elegan */
-                transform: translateY(-1px);
-            }
-
-            /* Saat tombol diklik (Active / Dipetik) */
-            .btn-modern-danger:active,
-            .btn-modern-danger:focus {
-                background-color: #9f1239 !important; /* Menjadi semakin pekat saat ditekan */
-                box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.3) !important; /* Efek ring glow modern */
-                transform: translateY(0);
-            }
+        /* Styling tombol merah modern dengan efek transisi interaktif */
+        .btn-modern-danger {
+            background-color: #e11d48 !important; 
+            border: none !important;
+            transition: all 0.2s ease-in-out !important;
+        }
+        .btn-modern-danger:hover {
+            background-color: #be123c !important; 
+            transform: translateY(-1px);
+        }
+        .btn-modern-danger:active,
+        .btn-modern-danger:focus {
+            background-color: #9f1239 !important; 
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.3) !important; 
+            transform: translateY(0);
+        }
         .btn-outline-primary:hover {
-        background-color: #0066cc !important;
-        color: #ffffff !important;
-        border-color: #0066cc !important;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2) !important;
-    }
+            background-color: #0066cc !important;
+            color: #ffffff !important;
+            border-color: #0066cc !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2) !important;
+        }
+
+        /* Global Pagination Safety Styling */
+        .pagination svg {
+            width: 14px !important;
+            height: 14px !important;
+            max-width: 14px !important;
+            max-height: 14px !important;
+            vertical-align: middle;
+        }
 
         :root {
-            --sidebar-width: 280px;
+            --sidebar-width-collapsed: 80px;
+            --sidebar-width-expanded: 280px;
         }
 
         body {
@@ -58,10 +64,10 @@
             position: relative;
         }
 
-        /* Desain Sidebar */
+        /* Desain Sidebar ala Gemini */
         #sidebar {
-            min-width: var(--sidebar-width);
-            max-width: var(--sidebar-width);
+            min-width: var(--sidebar-width-collapsed);
+            max-width: var(--sidebar-width-collapsed);
             min-height: 100vh;
             background: linear-gradient(180deg, #090d16 0%, #0f172a 100%);
             color: #f8fafc;
@@ -71,35 +77,73 @@
             box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1050;
-            transform: translateX(-100%);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        #sidebar.show {
-            transform: translateX(0);
+        /* Saat sidebar dibuka/expanded */
+        #sidebar.expanded {
+            min-width: var(--sidebar-width-expanded);
+            max-width: var(--sidebar-width-expanded);
+        }
+
+        /* Atur visibilitas teks saat mode collapsed vs expanded */
+        .sidebar-text {
+            display: none;
+            white-space: nowrap;
+        }
+        #sidebar.expanded .sidebar-text {
+            display: inline-block;
+        }
+
+        /* Sembunyikan elemen box lengkap saat collapsed */
+        .sidebar-brand-full, .sidebar-footer-full {
+            display: none;
+        }
+        #sidebar.expanded .sidebar-brand-full, 
+        #sidebar.expanded .sidebar-footer-full {
+            display: block;
+        }
+
+        .sidebar-brand-icon, .sidebar-footer-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #sidebar.expanded .sidebar-brand-icon,
+        #sidebar.expanded .sidebar-footer-icon {
+            display: none;
         }
 
         #sidebar .nav-link {
             color: rgba(255, 255, 255, 0.75);
             border-radius: 12px;
             margin-bottom: 8px;
-            padding: 12px 18px;
+            padding: 12px 16px;
             font-weight: 500;
             transition: all 0.25s ease;
-            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            white-space: nowrap;
+        }
+
+        #sidebar .nav-link i {
+            font-size: 1.25rem;
+            min-width: 24px;
+            text-align: center;
         }
 
         #sidebar .nav-link:hover {
             background: rgba(0, 102, 204, 0.15);
             color: #ffffff;
-            transform: translateX(4px);
-            border-color: rgba(0, 102, 204, 0.3);
         }
 
         #sidebar .nav-link.active {
             background: linear-gradient(135deg, #002b5c 0%, #0055b3 100%);
             color: #ffffff;
             box-shadow: 0 4px 15px rgba(0, 85, 179, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.15);
             font-weight: 600;
         }
 
@@ -108,11 +152,11 @@
             padding: 2rem 2.5rem;
             width: 100%;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-left: 0;
+            margin-left: var(--sidebar-width-collapsed);
         }
 
-        .wrapper.sidebar-active .main-content {
-            margin-left: var(--sidebar-width);
+        .wrapper.sidebar-expanded .main-content {
+            margin-left: var(--sidebar-width-expanded);
         }
 
         .sidebar-brand-box {
@@ -120,31 +164,20 @@
             color: white;
             border-radius: 16px;
             box-shadow: 0 8px 20px rgba(0, 43, 92, 0.25);
+            cursor: pointer;
         }
 
-        #sidebarCollapse {
-            background-color: #0066cc;
-            border: 1px solid #0055b3;
-            color: #ffffff;
-            border-radius: 12px;
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
+        /* Logo PLN Tanpa Kotak Putih (Transparan/Menyatu) */
+        .pln-logo-clickable {
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
-            flex-shrink: 0;
+            transition: transform 0.2s ease;
         }
-        #sidebarCollapse:hover {
-            background-color: #0055b3;
-            transform: translateY(-2px);
+        .pln-logo-clickable:hover {
+            transform: scale(1.05);
         }
 
         @media (max-width: 768px) {
-            .main-content { padding: 1.25rem 1rem; }
-            .wrapper.sidebar-active .main-content { margin-left: 0; }
+            .main-content { padding: 1.25rem 1rem; margin-left: var(--sidebar-width-collapsed) !important; }
         }
     </style>
     @stack('styles')
@@ -154,52 +187,59 @@
 <div class="wrapper" id="pageWrapper">
     <!-- SIDEBAR -->
     <nav id="sidebar" class="p-3 d-flex flex-column">
-        <div class="sidebar-brand-box text-center p-3 mb-4 mt-2">
-            <div class="rounded-circle mx-auto d-flex align-items-center justify-content-center shadow-sm mb-2" style="width: 46px; height: 46px; background: rgba(255, 255, 255, 0.95); padding: 7px;">
-                <img src="{{ asset('images/logo-pln.jpeg') }}" alt="Logo PLN" style="width: 100%; height: 100%; object-fit: contain;" onerror="this.src='https://via.placeholder.com/40?text=PLN'">
+        
+        <!-- BAGIAN ATAS: LOGO PLN (Tombol Toggle Sidebar Tanpa Background Putih) -->
+        <div class="mb-4 text-center">
+            <div class="d-flex justify-content-center align-items-center py-2">
+                <img src="{{ asset('images/logo-pln.jpeg') }}" alt="Logo PLN" class="pln-logo-clickable" id="plnLogoToggle" style="width: 38px; height: auto; object-fit: contain;" title="Buka/Tutup Sidebar" onerror="this.src='https://via.placeholder.com/40?text=PLN'">
             </div>
-            <div class="d-flex flex-column lh-1">
-                <span class="fw-bold text-white mb-2" style="font-size: 0.95rem; letter-spacing: 0.5px;">ULP DUKUH KUPANG</span>
-                <span class="text-info fw-semibold" style="font-size: 0.65rem; letter-spacing: 0.5px;">UP3 SURABAYA SELATAN</span>
+
+            <!-- Tampilan Lengkap Brand saat Sidebar Terbuka -->
+            <div class="sidebar-brand-full sidebar-brand-box p-3 mt-2 text-center">
+                <div class="d-flex flex-column lh-1">
+                    <span class="fw-bold text-white mb-2" style="font-size: 0.95rem; letter-spacing: 0.5px;">ULP DUKUH KUPANG</span>
+                    <span class="text-info fw-semibold" style="font-size: 0.65rem; letter-spacing: 0.5px;">UP3 SURABAYA SELATAN</span>
+                </div>
             </div>
         </div>
 
+        <!-- MENU NAVIGASI BERDASARKAN ROLE -->
         <ul class="nav flex-column mb-auto w-100">
 
             @if(auth()->user()->role === 'cs')
 
-                {{-- MENU CS --}}
-                                <li class="nav-item">
-                        <a href="{{ route('cs.permohonan.index') }}"
-                        class="nav-link {{ request()->is('cs/permohonan') ? 'active' : '' }}">
-                            <i class="bi bi-archive me-3"></i>
-                            Permohonan
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('cs.permohonan.baru') }}"
-                        class="nav-link {{ request()->is('cs/permohonan/baru') ? 'active' : '' }}">
-                            <i class="bi bi-pencil-square me-3"></i>
-                            Input Permohonan
-                        </a>
+                {{-- MENU KHUSUS CUSTOMER SERVICE --}}
+                <li class="nav-item">
+                    <a href="{{ route('cs.permohonan.index') }}"
+                    class="nav-link {{ request()->is('cs/permohonan*') ? 'active' : '' }}" title="Permohonan">
+                        <i class="bi bi-archive"></i>
+                        <span class="sidebar-text">Permohonan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('cs.permohonan.baru') }}"
+                    class="nav-link {{ request()->is('cs/permohonan/baru') ? 'active' : '' }}" title="Input Permohonan">
+                        <i class="bi bi-pencil-square"></i>
+                        <span class="sidebar-text">Input Permohonan</span>
+                    </a>
                 </li>
 
             @elseif(auth()->user()->role === 'backoffice')
 
-                {{-- MENU PEGAWAI --}}
+                {{-- MENU KHUSUS ADMIN / PEGAWAI (BACKOFFICE) --}}
                 <li class="nav-item">
                     <a href="{{ route('pegawai.index') }}"
-                    class="nav-link {{ request()->is('pegawai') ? 'active' : '' }}">
-                        <i class="bi bi-grid-1x2-fill me-3"></i>
-                        Dashboard Pegawai
+                    class="nav-link {{ request()->is('pegawai') ? 'active' : '' }}" title="Dashboard Pegawai">
+                        <i class="bi bi-grid-1x2-fill"></i>
+                        <span class="sidebar-text">Dashboard Pegawai</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a href="{{ route('pegawai.index') }}"
-                    class="nav-link {{ request()->is('pegawai*') ? 'active' : '' }}">
-                        <i class="bi bi-list-task me-3"></i>
-                        Tugas Masuk
+                    class="nav-link {{ request()->is('pegawai/tugas*') ? 'active' : '' }}" title="Tugas Masuk">
+                        <i class="bi bi-list-task"></i>
+                        <span class="sidebar-text">Tugas Masuk</span>
                     </a>
                 </li>
 
@@ -207,42 +247,53 @@
 
         </ul>
 
-        <!-- Tombol Logout yang memicu Modal -->
-        <div class="mt-3">
-            <button type="button" class="nav-link w-100 text-start text-danger border-0 bg-transparent fw-semibold" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                <i class="bi bi-box-arrow-right me-3"></i> Logout
+        <!-- BAGIAN BAWAH: PROFIL PEGAWAI & LOGOUT -->
+        <div class="mt-auto pt-3 border-top border-secondary border-opacity-25">
+            
+            <!-- Mode Ringkas (Hanya Ikon Inisial) -->
+            <div class="sidebar-footer-icon text-center mb-3">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm mx-auto" style="width: 40px; height: 40px; font-size: 0.9rem;">
+                    {{ strtoupper(substr(auth()->user()->name ?? 'P', 0, 1)) }}
+                </div>
+            </div>
+
+            <!-- Mode Lengkap (Nama & Label Role Dinamis) -->
+            <div class="sidebar-footer-full mb-3 px-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm flex-shrink-0" style="width: 38px; height: 38px; font-size: 0.85rem;">
+                        {{ strtoupper(substr(auth()->user()->name ?? 'P', 0, 1)) }}
+                    </div>
+                    <div class="overflow-hidden">
+                        <div class="fw-semibold text-white text-truncate" style="font-size: 0.9rem;">
+                            {{ auth()->user()->name ?? 'User PLN' }}
+                        </div>
+                        <small class="text-info" style="font-size: 0.7rem;">
+                            @if(auth()->user()->role === 'backoffice')
+                                Admin PLN ULP
+                            @elseif(auth()->user()->role === 'cs')
+                                Customer Service PLN ULP
+                            @else
+                                User PLN ULP
+                            @endif
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Logout -->
+            <button type="button" class="nav-link w-100 text-start text-danger border-0 bg-transparent fw-semibold" data-bs-toggle="modal" data-bs-target="#logoutModal" title="Logout">
+                <i class="bi bi-box-arrow-right"></i>
+                <span class="sidebar-text">Logout</span>
             </button>
         </div>
 
-        <hr class="border-secondary border-opacity-25 mt-3">
-        <div class="text-center text-white-50" style="font-size: 0.75rem;">
-            &copy; 2026 Kerja Praktik<br>Telkom University SBY
+        <div class="text-center text-white-50 mt-2 sidebar-text" style="font-size: 0.7rem;">
+            &copy; 2026 Telkom University SBY
         </div>
     </nav>
 
     <!-- MAIN CONTENT AREA -->
     <div class="main-content">
-        <!-- Global Top Bar: Dinamis sesuai halaman -->
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center bg-white p-3 px-4 rounded-4 shadow-sm mb-4 border-start border-4 border-primary gap-3">
-            <div class="d-flex align-items-center gap-3">
-                <button type="button" id="sidebarCollapse" class="btn shadow-sm" title="Buka/Tutup Sidebar">
-                    <i class="bi bi-list fs-5"></i>
-                </button>
-                <div>
-                    <!-- Judul dengan ukuran besar -->
-                    <h3 class="fw-bold text-dark mb-1" style="letter-spacing: -0.5px; font-size: 1.75rem;">
-                        @yield('header_title', 'Dashboard ULP Dukuh Kupang')
-                    </h3>
-                    <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                        @yield('header_desc', 'Kelola dan Pantau Aktivitas Layanan Pelanggan.')
-                    </p>
-                </div>
-            </div>
-            <div>
-                @stack('header_action')
-            </div>
-        </div>
-
         @yield('content')
     </div>
 </div> <!-- Penutup .wrapper -->
@@ -265,7 +316,7 @@
                     Batal
                 </button>
 
-              <!-- Form Logout dengan Tombol Merah Modern & Interaktif -->
+                <!-- Form Logout -->
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn px-4 rounded-3 fw-semibold text-white btn-modern-danger shadow-sm">
@@ -282,11 +333,11 @@
 <script>
     const sidebar = document.getElementById('sidebar');
     const pageWrapper = document.getElementById('pageWrapper');
-    const sidebarCollapseBtn = document.getElementById('sidebarCollapse');
+    const plnLogoToggle = document.getElementById('plnLogoToggle');
 
-    sidebarCollapseBtn.addEventListener('click', function() {
-        sidebar.classList.toggle('show');
-        pageWrapper.classList.toggle('sidebar-active');
+    plnLogoToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('expanded');
+        pageWrapper.classList.toggle('sidebar-expanded');
     });
 </script>
 @stack('scripts')

@@ -149,9 +149,9 @@
                     </div>
 
 
-                    {{-- INFORMASI PELANGGAN --}}
+                    {{-- INFORMASI PELANGGAN & PEMOHON --}}
                     <h5 class="fw-bold mb-3">
-                        Informasi Pelanggan
+                        Informasi Pelanggan & Pemohon
                     </h5>
 
                     <div class="row g-3 mb-4">
@@ -165,16 +165,25 @@
                             </div>
                         </div>
 
-
+                        {{-- NAMA PEMILIK / PELANGGAN (DARI DATABASE PLN) --}}
                         <div class="col-md-6">
                             <div class="detail-box">
-                                <small>Nama Pelanggan</small>
-                                <div>
+                                <small>Nama Pemilik (Database PLN)</small>
+                                <div class="text-primary">
                                     {{ $permohonan->nama_pelanggan ?? '-' }}
                                 </div>
                             </div>
                         </div>
 
+                        {{-- NAMA PEMOHON (YANG MENGAJUKAN) --}}
+                        <div class="col-md-6">
+                            <div class="detail-box border-start border-4 border-warning">
+                                <small>Nama Pemohon (Yang Mengajukan)</small>
+                                <div class="fw-bold text-dark">
+                                    {{ $permohonan->nama_pemohon ?? '-' }}
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="col-md-6">
                             <div class="detail-box">
@@ -185,8 +194,7 @@
                             </div>
                         </div>
 
-
-                        <div class="col-md-6">
+                        <div class="col-12">
                             <div class="detail-box">
                                 <small>Alamat</small>
                                 <div>

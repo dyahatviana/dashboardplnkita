@@ -27,21 +27,23 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        // 2. Petakan input ke kolom 'email' di Database (karena database menggunakan kolom email)
+        // 2. Petakan input ke kolom 'email' di Database
         $credentials = [
             'email'    => $loginInput,
             'password' => $request->password,
         ];
 
-        // 3. Proses Attempt & Redirect
+        // 3. Proses Attempt & Redirect Berdasarkan Role
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
 
-            if (Auth::user()->role === 'cs') {
+            $role = Auth::user()->role;
+
+            if ($role === 'cs') {
                 return redirect()->route('cs.permohonan.index');
             }
 
-            if (Auth::user()->role === 'backoffice') {
+            if ($role === 'backoffice') {
                 return redirect()->route('pegawai.index');
             }
 

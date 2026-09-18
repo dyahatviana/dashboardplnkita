@@ -244,7 +244,7 @@
                         </th>
 
                         <th class="py-3">
-                            ID Pel / Nama
+                            Pelanggan & Pemohon
                         </th>
 
                         <th class="py-3">
@@ -282,21 +282,20 @@
                             </td>
 
 
-                            <!-- PELANGGAN -->
+                            <!-- PELANGGAN & PEMOHON -->
                             <td>
-
                                 <div class="fw-bold text-dark fs-6">
                                     {{ $item->nama_pelanggan ?? '-' }}
                                 </div>
 
-                                <small class="text-muted font-monospace"
-                                       style="font-size: 0.85rem;">
+                                <div class="text-secondary small mt-1">
+                                    <i class="bi bi-person-fill text-muted me-1"></i> Pemohon: <span class="fw-semibold text-dark">{{ $item->nama_pemohon ?? '-' }}</span>
+                                </div>
 
-                                    ID:
-                                    {{ $item->id_pelanggan ?? '-' }}
-
+                                <small class="text-muted font-monospace d-block mt-1"
+                                       style="font-size: 0.8rem;">
+                                    ID Pel: {{ $item->id_pelanggan ?? '-' }}
                                 </small>
-
                             </td>
 
 

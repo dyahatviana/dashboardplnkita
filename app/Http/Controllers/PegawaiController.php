@@ -10,20 +10,23 @@ class PegawaiController extends Controller
     /**
      * Dashboard Pegawai
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil semua permohonan dari CS
-        $permohonans = Permohonan::latest()->get();
+        $search = $request->input('search');
+
+        // Ambil permohonan dari CS dengan dukungan fitur pencarian & pagination
+        $permohonans = Permohonan::when($search, function ($query, $search) {
+            return $query->where('no_agenda', 'like', '%' . $search . '%')
+                         ->orWhere('nama_pelanggan', 'like', '%' . $search . '%')
+                         ->orWhere('id_pelanggan', 'like', '%' . $search . '%')
+                         ->orWhere('jenis_permohonan', 'like', '%' . $search . '%');
+        })->latest()->paginate(10)->withQueryString();
 
         // Statistik tugas
         $total = Permohonan::count();
-
         $menunggu = Permohonan::where('status', 'Menunggu')->count();
-
         $diproses = Permohonan::where('status', 'Sedang Diproses')->count();
-
         $selesai = Permohonan::where('status', 'Selesai')->count();
-
         $ditolak = Permohonan::where('status', 'Ditolak')->count();
 
         return view('pegawai.index', compact(

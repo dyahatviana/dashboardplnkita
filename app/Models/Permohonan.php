@@ -16,6 +16,7 @@ class Permohonan extends Model
         'tanggal_permohonan',
         'id_pelanggan',
         'nama_pelanggan',
+        'nama_pemohon',
         'alamat',
         'no_telepon',
         'jenis_permohonan',
@@ -24,4 +25,13 @@ class Permohonan extends Model
         'status',
         'divisi_tujuan',
     ];
+
+    /**
+     * Relasi ke Tabel Master Pelanggan (jika ID Pelanggan merujuk ke tabel lain)
+     * Sesuaikan 'id_pelanggan' dengan nama kolom di kedua tabel
+     */
+    public function dataPelanggan()
+    {
+        return $this->belongsTo(Pelanggan::class, 'id_pelanggan', 'id_pelanggan');
+    }
 }

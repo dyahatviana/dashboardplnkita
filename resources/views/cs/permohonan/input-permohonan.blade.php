@@ -82,12 +82,23 @@
                     </div>
                 </div>
 
-                <!-- Nama Pemohon -->
+                <!-- 1. NAMA PEMOHON (Diisi manual oleh CS) -->
                 <div class="col-md-6">
-                    <label for="nama_pelanggan" class="form-label fw-bold text-dark text-uppercase tracking-wider mb-2" style="font-size: 0.9rem;">
+                    <label for="nama_pemohon" class="form-label fw-bold text-dark text-uppercase tracking-wider mb-2" style="font-size: 0.9rem;">
                         <i class="bi bi-person text-primary me-1"></i> Nama Pemohon
                     </label>
-                    <input type="text" class="form-control form-control-lg bg-light border-0 py-3 fs-5 @error('nama_pelanggan') is-invalid @enderror" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" required placeholder="Ketik nama pemohon (bisa berbeda dengan pemilik meter)">
+                    <input type="text" class="form-control form-control-lg bg-light border-0 py-3 fs-5 @error('nama_pemohon') is-invalid @enderror" id="nama_pemohon" name="nama_pemohon" value="{{ old('nama_pemohon') }}" required placeholder="Ketik nama orang yang mengajukan...">
+                    @error('nama_pemohon')
+                        <div class="invalid-feedback fs-6">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- 2. NAMA PELANGGAN / PEMILIK METER (Dari database PLN / hasil Cek ID) -->
+                <div class="col-md-6">
+                    <label for="nama_pelanggan" class="form-label fw-bold text-dark text-uppercase tracking-wider mb-2" style="font-size: 0.9rem;">
+                        <i class="bi bi-shield-check text-primary me-1"></i> Nama Pelanggan (Pemilik Meter PLN)
+                    </label>
+                    <input type="text" class="form-control form-control-lg bg-light border-0 py-3 fs-5 @error('nama_pelanggan') is-invalid @enderror" id="nama_pelanggan" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" required placeholder="Otomatis terisi saat Cek ID atau ketik manual">
                     @error('nama_pelanggan')
                         <div class="invalid-feedback fs-6">{{ $message }}</div>
                     @enderror
@@ -240,11 +251,9 @@
 
         document.getElementById('info-pelanggan').style.display = 'none';
 
-        // Reset variabel global fetched data
         window.fetchedNamaPelanggan = null;
         window.fetchedAlamatPelanggan = null;
 
-        // Hapus styling auto-fill saat reset
         document.getElementById('nama_pelanggan').classList.remove('auto-filled');
         document.getElementById('alamat_pemohon').classList.remove('auto-filled');
     }
@@ -256,11 +265,9 @@
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
-                        // Simpan data ke variabel global sementara untuk tombol "Gunakan Data Ini"
                         window.fetchedNamaPelanggan = result.data.nama;
                         window.fetchedAlamatPelanggan = result.data.alamat;
 
-                        // Tampilkan box preview informasi database saja
                         document.getElementById('text-nama-db').textContent = result.data.nama;
                         document.getElementById('text-alamat-db').textContent = result.data.alamat;
                         document.getElementById('info-pelanggan').style.display = 'block';
@@ -278,12 +285,13 @@
     // Event Listener Tombol "Gunakan Data Ini"
     document.getElementById('btn-gunakan-data').addEventListener('click', function() {
         if (window.fetchedNamaPelanggan && window.fetchedAlamatPelanggan) {
-            const inputNama = document.getElementById('nama_pelanggan');
+            // Masukkan nama pemilik meter PLN ke input nama_pelanggan
+            const inputNamaPelanggan = document.getElementById('nama_pelanggan');
+            inputNamaPelanggan.value = window.fetchedNamaPelanggan;
+            inputNamaPelanggan.classList.add('auto-filled');
+
+            // Masukkan alamat ke alamat_pemohon
             const inputAlamat = document.getElementById('alamat_pemohon');
-
-            inputNama.value = window.fetchedNamaPelanggan;
-            inputNama.classList.add('auto-filled');
-
             inputAlamat.value = window.fetchedAlamatPelanggan;
             inputAlamat.classList.add('auto-filled');
         }
@@ -315,12 +323,11 @@
         }
     });
 
-    // Tangani pengiriman form custom "Lainnya" (Diperbaiki agar tidak disable elemen agar nilai aman terkirim)
+    // Tangani pengiriman form custom "Lainnya"
     document.getElementById('formPermohonan').addEventListener('submit', function(e) {
         const selectJenis = document.getElementById('jenis_permohonan');
         const inputJenisLainnya = document.getElementById('jenis_permohonan_lainnya');
         if (selectJenis.value === 'Lainnya' && inputJenisLainnya.value.trim() !== '') {
-            // Ubah langsung option value atau buat option baru dinamis agar terkirim ke Laravel
             let customOption = document.createElement('option');
             customOption.value = inputJenisLainnya.value.trim();
             customOption.text = inputJenisLainnya.value.trim();
@@ -343,9 +350,9 @@
 <style>
     /* Styling modern emerald untuk input form yang terisi otomatis dari database PLN */
     .auto-filled {
-        background-color: #ecfdf5 !important; /* Emerald 50: Mint clean yang sangat soft & elegan */
-        border: 1px solid #34d399 !important;    /* Emerald 400: Border hijau modern */
-        color: #065f46 !important;            /* Emerald 800: Teks hijau tua yang tajam & kontras */
+        background-color: #ecfdf5 !important; 
+        border: 1px solid #34d399 !important;    
+        color: #065f46 !important;             
     }
 
     .form-control, .form-select {

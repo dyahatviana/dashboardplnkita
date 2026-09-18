@@ -61,7 +61,8 @@ class CSController extends Controller
         $request->validate([
             'tanggal_permohonan'  => 'required|date',
             'id_pelanggan'        => 'required|string|digits:12',
-            'nama_pelanggan'        => 'required|string|max:255',
+            'nama_pemohon'        => 'required|string|max:255', // <--- Validasi untuk Nama Pemohon
+            'nama_pelanggan'      => 'required|string|max:255', // Nama Pemilik dari DB PLN
             'alamat_pemohon'      => 'required|string',
             'no_telepon'          => ['required', 'string', 'regex:/^[0-9\+\-\s]+$/', 'min:10', 'max:15'],
             'jenis_permohonan'    => 'required|string|max:100',
@@ -79,8 +80,9 @@ class CSController extends Controller
             'no_agenda'           => 'PRM-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
             'tanggal_permohonan'  => $request->tanggal_permohonan,
             'id_pelanggan'        => $request->id_pelanggan,
-            'nama_pelanggan'      => $request->nama_pelanggan,
-            'alamat'              => $request->alamat_pemohon, // <--- Ubah dari 'alamat_pemohon' menjadi 'alamat'
+            'nama_pemohon'        => $request->nama_pemohon,     // <--- Disimpan ke kolom nama_pemohon
+            'nama_pelanggan'      => $request->nama_pelanggan,   // Nama Pemilik dari DB PLN
+            'alamat'              => $request->alamat_pemohon,   
             'no_telepon'          => $request->no_telepon,
             'jenis_permohonan'    => $request->jenis_permohonan,
             'jenis_tarif'         => $request->jenis_tarif,
