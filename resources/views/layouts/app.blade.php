@@ -121,7 +121,7 @@
             border-left: 4px solid #93c5fd;
         }
 
-        /* Styling Khusus Tombol Logout Sidebar yang Lebih Keren & Estetik */
+        /* Styling Khusus Tombol Logout Sidebar */
         .sidebar-logout-btn {
             color: #fb7185 !important;
             background: rgba(244, 63, 94, 0.04);
@@ -160,12 +160,16 @@
             transform: scale(1.1);
         }
 
+        /* PERUBAHAN UTAMA: Agar main-content menjadi flex kolom penuh dan footer menempel di bawah */
         .main-content {
             flex-grow: 1;
             padding: 2.25rem 2.5rem;
             width: 100%;
             transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             margin-left: var(--sidebar-width-collapsed);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .wrapper.sidebar-expanded .main-content {
@@ -180,7 +184,7 @@
             backdrop-filter: blur(10px);
         }
 
-        /* Tombol Garis 3 Berwarna dengan Efek Interaktif Modern */
+        /* Tombol Garis 3 Berwarna */
         .sidebar-toggler-btn {
             background: var(--accent-gradient);
             color: #ffffff;
@@ -376,7 +380,7 @@
                 </div>
             </div>
 
-            <!-- Tombol Logout yang Di-improve (Lebih Keren & Estetik) -->
+            <!-- Tombol Logout -->
             <button type="button" class="sidebar-logout-btn" data-bs-toggle="modal" data-bs-target="#logoutModal" title="Logout">
                 <i class="bi bi-box-arrow-right"></i>
                 <span class="sidebar-text">Logout</span>
@@ -404,7 +408,40 @@
             </div>
         </div>
 
-        @yield('content')
+        <!-- ISI KONTEN DINAMIS -->
+        <div class="flex-grow-1">
+            @yield('content')
+        </div>
+
+        <!-- FOOTER KUSTOM DI BAWAH HALAMAN UTAMA -->
+        <footer class="w-full py-4 mt-5 bg-white border-top border-slate-200 rounded-4 shadow-sm px-4">
+            <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 text-center text-md-start">
+
+                <!-- Identitas / Logo PLN & Kampus -->
+                <div class="d-flex align-items-center gap-3 justify-content-center justify-content-md-start">
+                    <div class="d-flex align-items-center gap-2 bg-primary bg-opacity-10 px-3 py-1.5 rounded-3 border border-primary border-opacity-25">
+                        <span class="fw-bold tracking-wider text-primary" style="font-size: 0.9rem;">PLN</span>
+                        <span class="text-muted small border-start border-primary border-opacity-25 ps-2">Persero</span>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 bg-warning bg-opacity-10 px-3 py-1.5 rounded-3 border border-warning border-opacity-25">
+                        <span class="fw-bold text-warning-emphasis" style="font-size: 0.85rem;">KAMPUS</span>
+                        <span class="text-muted small border-start border-warning border-opacity-25 ps-2">Mitra Energi</span>
+                    </div>
+                </div>
+
+                <!-- Kata Mutiara -->
+                <div class="text-muted fst-italic small max-w-md">
+                    "Energi terbaik bukan hanya yang mengalir menyinari negeri, tetapi juga semangat kolaborasi ilmu dan teknologi."
+                </div>
+
+                <!-- Copyright -->
+                <div class="text-muted small">
+                    &copy; {{ date('Y') }} PLN ULP Dukuh Kupang.
+                </div>
+            </div>
+        </footer>
+
     </div>
 </div>
 
