@@ -417,32 +417,35 @@
         <footer class="w-full py-4 mt-5 bg-white border-top border-slate-200 rounded-4 shadow-sm px-4">
             <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 text-center text-md-start">
 
-                <!-- Identitas / Logo PLN & Kampus -->
-                <div class="d-flex align-items-center gap-3 justify-content-center justify-content-md-start">
-                    <div class="d-flex align-items-center gap-2 bg-primary bg-opacity-10 px-3 py-1.5 rounded-3 border border-primary border-opacity-25">
-                        <span class="fw-bold tracking-wider text-primary" style="font-size: 0.9rem;">PLN</span>
-                        <span class="text-muted small border-start border-primary border-opacity-25 ps-2">Persero</span>
-                    </div>
+          <!-- Footer Container Utama (Biasanya berupa row atau flex container) -->
+<div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 w-100">
 
-                    <div class="d-flex align-items-center gap-2 bg-warning bg-opacity-10 px-3 py-1.5 rounded-3 border border-warning border-opacity-25">
-                        <span class="fw-bold text-warning-emphasis" style="font-size: 0.85rem;">KAMPUS</span>
-                        <span class="text-muted small border-start border-warning border-opacity-25 ps-2">Mitra Energi</span>
-                    </div>
-                </div>
+    <!-- 1. Identitas / Logo PLN & Kampus (Dengan Space di dalam kotak) -->
+    <div class="d-flex align-items-center gap-3">
 
-                <!-- Kata Mutiara -->
-                <div class="text-muted fst-italic small max-w-md">
-                    "Energi terbaik bukan hanya yang mengalir menyinari negeri, tetapi juga semangat kolaborasi ilmu dan teknologi."
-                </div>
+        <!-- Logo PLN -->
+        <div class="d-flex align-items-center justify-content-center px-3 py-2 rounded-2 border border-primary border-opacity-25 bg-primary bg-opacity-10">
+            <img src="{{ asset('images/logo-pln.jpeg') }}" alt="Logo PLN" style="height: 30px; width: auto;">
+        </div>
 
-                <!-- Copyright -->
-                <div class="text-muted small">
-                    &copy; {{ date('Y') }} PLN ULP Dukuh Kupang.
-                </div>
-            </div>
-        </footer>
+        <!-- Logo Kampus / Mitra -->
+        <div class="d-flex align-items-center justify-content-center px-3 py-2 rounded-2 border border-warning border-opacity-25 bg-warning bg-opacity-10">
+            <img src="{{ asset('images/logo-telkom.png') }}" alt="Logo Kampus" style="height: 30px; width: auto;">
+        </div>
 
     </div>
+
+    <!-- 2. Kalimat Kata-kata (Posisi di Tengah) -->
+    <div class="text-center text-muted fst-italic flex-grow-1 px-3">
+        "Energi terbaik bukan hanya yang mengalir menyinari negeri, tetapi juga semangat kolaborasi ilmu dan teknologi."
+    </div>
+
+    <!-- 3. Copyright (Posisi di Paling Kanan) -->
+    <div class="text-nowrap text-muted small">
+        &copy; 2026 Kaya Person.
+    </div>
+
+</div>
 </div>
 
 <!-- MODAL KONFIRMASI LOGOUT -->

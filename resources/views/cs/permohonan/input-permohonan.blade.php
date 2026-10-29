@@ -127,11 +127,10 @@
                 </div>
 
                 @php
-                    $listJenisPermohonan = ['Pasang Baru', 'Perubahan Daya', 'Penyambungan Sementara', 'Pengaduan/Keluhan'];
+                    $listJenisPermohonan = ['Pasang Baru & Perubahan Daya', 'Penyambungan Sementara', 'Pengaduan/Keluhan'];
                     $oldJenis = old('jenis_permohonan');
                     $isJenisLainnya = $oldJenis && !in_array($oldJenis, $listJenisPermohonan);
 
-                    $listDivisi = ['Teknik', 'Transaksi Energi', 'Pemasaran & Pelayanan Pelanggan', 'Keuangan & Umum'];
                     $oldDivisi = old('divisi_tujuan');
                     $isDivisiLainnya = $oldDivisi && !in_array($oldDivisi, $listDivisi);
                 @endphp
@@ -143,8 +142,7 @@
                     </label>
                     <select class="form-select form-select-lg bg-light border-0 py-3 fs-5 @error('jenis_permohonan') is-invalid @enderror" id="jenis_permohonan" name="jenis_permohonan" required onchange="cekDropdown('jenis_permohonan', 'wrapper_lainnya_jenis', 'jenis_permohonan_lainnya')">
                         <option value="" selected disabled>Pilih Jenis Permohonan...</option>
-                        <option value="Pasang Baru" {{ ($oldJenis == 'Pasang Baru') ? 'selected' : '' }}>Pasang Baru</option>
-                        <option value="Perubahan Daya" {{ ($oldJenis == 'Perubahan Daya') ? 'selected' : '' }}>Perubahan Daya</option>
+                        <option value="Pasang Baru & Perubahan Daya" {{ ($oldJenis == 'Pasang Baru & Perubahan Daya') ? 'selected' : '' }}>Pasang Baru & Perubahan Daya</option>
                         <option value="Penyambungan Sementara" {{ ($oldJenis == 'Penyambungan Sementara') ? 'selected' : '' }}>Penyambungan Sementara</option>
                         <option value="Pengaduan/Keluhan" {{ ($oldJenis == 'Pengaduan/Keluhan') ? 'selected' : '' }}>Pengaduan/Keluhan</option>
                         <option value="Lainnya" {{ $isJenisLainnya ? 'selected' : '' }}>Lainnya...</option>
@@ -184,7 +182,6 @@
                         <option value="Teknik" {{ ($oldDivisi == 'Teknik') ? 'selected' : '' }}>Teknik</option>
                         <option value="Transaksi Energi" {{ ($oldDivisi == 'Transaksi Energi') ? 'selected' : '' }}>Transaksi Energi</option>
                         <option value="Pemasaran & Pelayanan Pelanggan" {{ ($oldDivisi == 'Pemasaran & Pelayanan Pelanggan') ? 'selected' : '' }}>Pemasaran & Pelayanan Pelanggan</option>
-                        <option value="Keuangan & Umum" {{ ($oldDivisi == 'Keuangan & Umum') ? 'selected' : '' }}>Keuangan & Umum</option>
                         <option value="Lainnya" {{ $isDivisiLainnya ? 'selected' : '' }}>Lainnya...</option>
                     </select>
 
@@ -350,9 +347,9 @@
 <style>
     /* Styling modern emerald untuk input form yang terisi otomatis dari database PLN */
     .auto-filled {
-        background-color: #ecfdf5 !important; 
-        border: 1px solid #34d399 !important;    
-        color: #065f46 !important;             
+        background-color: #ecfdf5 !important;
+        border: 1px solid #34d399 !important;
+        color: #065f46 !important;
     }
 
     .form-control, .form-select {
